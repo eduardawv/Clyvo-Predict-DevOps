@@ -1,7 +1,7 @@
 # 🐾 CLYVO Predict API — Sprint 3 DevOps
 
 > **Java 17 · Spring Boot 3.5 · Oracle XE 21c · Docker · ACR + ACI · Azure**  
-> FIAP Challenge 2026 — 2TDS Fevereiro  
+> FIAP Challenge 2026 — 2TDSPX Fevereiro  
 > Disciplina: DevOps Tools & Cloud Computing
 
 ---
@@ -253,13 +253,13 @@ az container restart \
 
 | Nome Completo | RM |
 |---------------|----|
-| Aluno 1 | RM000000 |
-| Aluno 2 | RM000000 |
-| Aluno 3 | RM000000 |
-| Aluno 4 | RM000000 |
-| Aluno 5 | RM000000 |
+| Eduarda Weiss Ventura | RM: 564434 |
+| Maria Gabriela Landim Severo | RM: 565146 |
+| Samara Porto Souza | RM: 559072 |
+| Lucas Nunes Soares | RM: 566503 |
+| Camily Vitoria Pereira Maciel | RM: 566520 |
 
-**Turma:** 2TDS — Fevereiro 2026  
+**Turma:** 2TDSPX — Fevereiro 2026  
 **Disciplina:** DevOps Tools & Cloud Computing  
 **Sprint:** 3
 
