@@ -44,31 +44,7 @@ O **CLYVO Predict** é uma plataforma SaaS veterinária que centraliza a gestão
 ## 🏗️ Arquitetura da Solução
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MICROSOFT AZURE (eastus)                     │
-│                                                                 │
-│  ┌──────────────────────────────┐                               │
-│  │  Azure Container Registry   │  ← docker push (imagem app)   │
-│  │  clyvopredictacr             │                               │
-│  └──────────────┬───────────────┘                               │
-│                 │ pull                                           │
-│  ┌──────────────▼───────────────────────────────────────────┐   │
-│  │  ACI — Container Group: clyvo-predict-group              │   │
-│  │                                                          │   │
-│  │  ┌──────────────────────┐  localhost  ┌──────────────┐   │   │
-│  │  │  clyvo-api           │◄──:1521────►│  oracle-db   │   │   │
-│  │  │  Java 17 / Spring    │             │  Oracle XE   │   │   │
-│  │  │  Porta pública: 8080 │             │  21c         │   │   │
-│  │  │  user: clyvouser     │             └──────┬───────┘   │   │
-│  │  └──────────────────────┘                    │           │   │
-│  │                                              │ mount     │   │
-│  │                                   ┌──────────▼────────┐  │   │
-│  │                                   │  Azure Files      │  │   │
-│  │                                   │  oracle-data      │  │   │
-│  │                                   │  (volume nomeado) │  │   │
-│  │                                   └───────────────────┘  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
+[arquitetura-sprint3-clyvo.drawio.png]
 
 Usuário/Vet ──HTTP:8080──► clyvo-predict-api.<region>.azurecontainer.io
 
