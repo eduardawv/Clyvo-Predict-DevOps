@@ -1,51 +1,46 @@
 version: "3.9"
 
 services:
-
-  oracle-db:
-    image: gvenzl/oracle-xe:21-slim
-    container_name: clyvo-oracle
+  mysql-db:
+    image: mysql:8.0
+    container_name: clyvo-mysql
     restart: unless-stopped
     environment:
-      ORACLE_PASSWORD: ClyvoPredict@2024
-      ORACLE_DATABASE: CLYVODB
-      APP_USER: clyvo_user
-      APP_USER_PASSWORD: Clyvo@Pass123
+      MYSQL_ROOT_PASSWORD: ClyvoRoot@2024
+      MYSQL_DATABASE: clyvodb
+      MYSQL_USER: clyvo_user
+      MYSQL_PASSWORD: Clyvo@Pass123
     ports:
-      - "1521:1521"
+      - "3306:3306"
     volumes:
-      - oracle_data:/opt/oracle/oradata
+      - mysql_data:/var/lib/mysql
     networks:
       - clyvo-net
     healthcheck:
-      test: ["CMD", "healthcheck.sh"]
-      interval: 30s
-      timeout: 20s
-      retries: 15
-      start_period: 180s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pClyvoRoot@2024"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   clyvo-api:
     build:
       context: .
       dockerfile: Dockerfile
-    image: clyvo-predict:latest
     container_name: clyvo-predict-api
     restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/CLYVODB
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/clyvodb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
       SPRING_DATASOURCE_USERNAME: clyvo_user
       SPRING_DATASOURCE_PASSWORD: Clyvo@Pass123
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: oracle.jdbc.OracleDriver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: "false"
-      SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
-      JAVA_OPTS: "-Xms256m -Xmx512m"
     depends_on:
-      oracle-db:
+      mysql-db:
         condition: service_healthy
     networks:
       - clyvo-net
@@ -53,8 +48,7 @@ services:
 networks:
   clyvo-net:
     driver: bridge
-    name: clyvo_network
 
 volumes:
-  oracle_data:
-    name: clyvo_oracle_data
+  mysql_data:
+    name: clyvo_mysql_data

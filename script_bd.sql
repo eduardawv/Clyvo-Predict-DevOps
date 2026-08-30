@@ -1,80 +1,48 @@
 -- =================================================================
--- CLYVO Predict — script_bd.sql
--- DDL das tabelas core da aplicação
--- Disciplina: DevOps Tools & Cloud Computing — Sprint 3
--- FIAP 2026 — 2TDS Fevereiro
--- =================================================================
--- TABELAS CORE: PET e TUTOR (relacionadas entre si)
--- CRUD completo implementado na API Java Spring Boot
+-- CLYVO Predict — script_bd.sql (MySQL 8)
+-- DDL das tabelas core + inserts significativos
 -- =================================================================
 
--- ── TUTOR ─────────────────────────────────────────────────────
-CREATE TABLE TUTOR (
-    id_tutor  NUMBER        NOT NULL,
-    nome      VARCHAR2(100) NOT NULL,
-    email     VARCHAR2(100),
-    telefone  VARCHAR2(20)
-);
+CREATE TABLE IF NOT EXISTS tb_tutor (
+    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome     VARCHAR(100) NOT NULL,
+    email    VARCHAR(100) UNIQUE,
+    telefone VARCHAR(20),
+    senha    VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE TUTOR
-    ADD CONSTRAINT TUTOR_PK PRIMARY KEY (id_tutor);
+CREATE TABLE IF NOT EXISTS tb_pet (
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome         VARCHAR(100) NOT NULL,
+    especie      VARCHAR(50),
+    raca         VARCHAR(50),
+    idade        INT,
+    peso         DECIMAL(5,2),
+    health_score INT DEFAULT 100,
+    tutor_id     BIGINT NOT NULL,
+    CONSTRAINT fk_pet_tutor FOREIGN KEY (tutor_id) REFERENCES tb_tutor(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE TUTOR
-    ADD CONSTRAINT TUTOR_EMAIL_UK UNIQUE (email);
+CREATE TABLE IF NOT EXISTS tb_evento_saude (
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tipo_evento  VARCHAR(50) NOT NULL,
+    descricao    VARCHAR(300),
+    data_evento  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    pet_id       BIGINT NOT NULL,
+    CONSTRAINT fk_evento_pet FOREIGN KEY (pet_id) REFERENCES tb_pet(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-COMMENT ON TABLE  TUTOR           IS 'Donos dos pets cadastrados no sistema';
-COMMENT ON COLUMN TUTOR.id_tutor  IS 'Identificador único do tutor';
-COMMENT ON COLUMN TUTOR.nome      IS 'Nome completo do tutor';
-COMMENT ON COLUMN TUTOR.email     IS 'E-mail único para login e alertas';
-COMMENT ON COLUMN TUTOR.telefone  IS 'Telefone para contato via WhatsApp';
+-- Inserts significativos (mínimo 2 por tabela)
+INSERT INTO tb_tutor (nome, email, telefone, senha) VALUES
+    ('Carlos Silva', 'carlos@email.com', '11999990001', '$2a$10$dummyhashvalue'),
+    ('Ana Souza', 'ana@email.com', '11999990002', '$2a$10$dummyhashvalue'),
+    ('Fernanda Lima', 'fernanda@email.com', '11999990003', '$2a$10$dummyhashvalue');
 
--- ── PET ───────────────────────────────────────────────────────
-CREATE TABLE PET (
-    id_pet       NUMBER        NOT NULL,
-    nome         VARCHAR2(100) NOT NULL,
-    especie      VARCHAR2(50),
-    raca         VARCHAR2(50),
-    idade        NUMBER,
-    peso         NUMBER(5,2),
-    score_saude  NUMBER(5,2),
-    status_risco VARCHAR2(20),
-    id_tutor     NUMBER        NOT NULL
-);
+INSERT INTO tb_pet (nome, especie, raca, idade, peso, health_score, tutor_id) VALUES
+    ('Thor', 'Cachorro', 'Golden Retriever', 5, 32.50, 85, 1),
+    ('Luna', 'Gato', 'Siames', 3, 4.20, 92, 2),
+    ('Mel', 'Cachorro', 'Poodle', 7, 8.50, 68, 3);
 
-ALTER TABLE PET
-    ADD CONSTRAINT PET_PK PRIMARY KEY (id_pet);
-
-ALTER TABLE PET
-    ADD CONSTRAINT PET_TUTOR_FK FOREIGN KEY (id_tutor)
-    REFERENCES TUTOR (id_tutor);
-
-ALTER TABLE PET
-    ADD CONSTRAINT PET_SCORE_CHK
-    CHECK (score_saude BETWEEN 0 AND 100);
-
-ALTER TABLE PET
-    ADD CONSTRAINT PET_RISCO_CHK
-    CHECK (status_risco IN ('BAIXO', 'MODERADO', 'ALTO', 'CRITICO'));
-
-COMMENT ON TABLE  PET              IS 'Pacientes veterinários com Health Score';
-COMMENT ON COLUMN PET.id_pet       IS 'Identificador único do pet';
-COMMENT ON COLUMN PET.nome         IS 'Nome do pet';
-COMMENT ON COLUMN PET.especie      IS 'Espécie (Cachorro, Gato, etc.)';
-COMMENT ON COLUMN PET.raca         IS 'Raça do animal';
-COMMENT ON COLUMN PET.score_saude  IS 'Health Score de 0 a 100 (algorítmo proprietário)';
-COMMENT ON COLUMN PET.status_risco IS 'Classificação de risco: BAIXO, MODERADO, ALTO, CRITICO';
-COMMENT ON COLUMN PET.id_tutor     IS 'FK para o dono do pet';
-
--- ── INSERTS SIGNIFICATIVOS ────────────────────────────────────
-
--- Tutores (mínimo 2 inserts com conteúdo significativo)
-INSERT INTO TUTOR VALUES (1, 'Carlos Silva',   'carlos@email.com',   '11999990001');
-INSERT INTO TUTOR VALUES (2, 'Ana Souza',       'ana@email.com',       '11999990002');
-INSERT INTO TUTOR VALUES (3, 'Fernanda Lima',   'fernanda@email.com',  '11999990003');
-
--- Pets (com relacionamento ao tutor via FK)
-INSERT INTO PET VALUES (1, 'Thor', 'Cachorro', 'Golden Retriever', 5, 32.5, 85, 'MODERADO', 1);
-INSERT INTO PET VALUES (2, 'Luna', 'Gato',     'Siames',           3,  4.2, 92, 'BAIXO',    2);
-INSERT INTO PET VALUES (3, 'Mel',  'Cachorro', 'Poodle',           7,  8.5, 68, 'ALTO',     3);
-
-COMMIT;
+INSERT INTO tb_evento_saude (tipo_evento, descricao, data_evento, pet_id) VALUES
+    ('VACINA', 'Vacina V10 polivalente aplicada', '2026-03-10', 1),
+    ('CONSULTA_ROTINA', 'Check-up anual. Saude em dia.', '2026-01-15', 2);
