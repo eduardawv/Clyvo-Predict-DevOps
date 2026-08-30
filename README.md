@@ -43,8 +43,8 @@ O **CLYVO Predict** é uma plataforma SaaS veterinária que centraliza a gestão
 
 ## 🏗️ Arquitetura da Solução
 
-```
-![Arquitetura](arquitetura-sprint3-clyvo.drawio.png)
+
+![Arquitetura CLYVO Predict](documentos/arquitetura.png)
 
 Usuário/Vet ──HTTP:8080──► clyvo-predict-api.<region>.azurecontainer.io
 
@@ -52,7 +52,7 @@ Legenda:
   ──► Requisição HTTP pública (porta 8080)
   ◄── Comunicação interna via localhost (containers no mesmo grupo ACI)
   [▼] Dados do Oracle persistidos em Azure Files (volume nomeado)
-```
+
 
 **Componentes:**
 - **ACR** (Azure Container Registry) — Armazena a imagem Docker da API
