@@ -249,6 +249,12 @@ exit
 
 ---
 
+## 🐳 Comandos manuais de build e push
+
+> Observação: estes comandos já são executados automaticamente pelo
+> `azure-setup-sprint3.sh`. Esta seção serve apenas como referência
+> para execução manual e troubleshooting.
+
 ## 🐳 Comandos de build e push
 
 ```bash
