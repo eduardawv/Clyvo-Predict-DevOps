@@ -1,7 +1,7 @@
 # 🐾 CLYVO Predict API — Sprint 3 DevOps
 
 > **Java 17 · Spring Boot 3.5 · MySQL 8 · Docker · ACR + ACI · Azure**  
-> FIAP Challenge 2026 — 2TDS Fevereiro  
+> FIAP Challenge 2026 — 2TDSPX Fevereiro  
 > Disciplina: DevOps Tools & Cloud Computing
 
 ---
@@ -35,33 +35,6 @@ O **CLYVO Predict** é uma plataforma SaaS veterinária que centraliza a gestão
 
 ![Arquitetura CLYVO Predict](documentos/arquitetura.png)
 
-```
-Desenvolvedor                     Microsoft Azure (eastus)
-     │                    ┌──────────────────────────────────────────────┐
-     │ docker build       │  Resource Group: rg-clyvo-predict-s3       │
-     │ docker push        │                                            │
-     └──────────────────► │  ┌──────────────────────────────────────┐  │
-                          │  │  ACR: clyvopredictacr                │  │
-                          │  │  Imagem: clyvo-predict:latest        │  │
-                          │  └───────────────┬──────────────────────┘  │
-                          │                  │ pull                    │
-                          │  ┌───────────────▼──────────────────────┐  │
-                          │  │  ACI: clyvo-predict-group            │  │
-                          │  │                                      │  │
-  Usuarios ──HTTP:8080──► │  │  ┌─────────────┐  ┌──────────────┐  │  │
-                          │  │  │ clyvo-api   │  │ mysql-db     │  │  │
-                          │  │  │ Java 17     ├──► MySQL 8      │  │  │
-                          │  │  │ Spring Boot │  │ clyvodb      │  │  │
-                          │  │  │ user:       │  └──────┬───────┘  │  │
-                          │  │  │ appuser     │         │          │  │
-                          │  │  └─────────────┘  ┌──────▼───────┐  │  │
-                          │  │                   │ Azure Files  │  │  │
-                          │  │                   │ Volume       │  │  │
-                          │  │                   │ Persistente  │  │  │
-                          │  │                   └──────────────┘  │  │
-                          │  └──────────────────────────────────────┘  │
-                          └──────────────────────────────────────────────┘
-```
 
 **Componentes:**
 - **ACR** — Armazena a imagem Docker da API
@@ -80,7 +53,7 @@ Desenvolvedor                     Microsoft Azure (eastus)
 | Lucas Nunes Soares | RM566503 |
 | Camily Vitoria Pereira Maciel | RM566520 |
 
-**Turma:** 2TDS — Fevereiro 2026
+**Turma:** 2TDSPX — Fevereiro 2026
 
 ---
 
@@ -254,8 +227,6 @@ exit
 > Observação: estes comandos já são executados automaticamente pelo
 > `azure-setup-sprint3.sh`. Esta seção serve apenas como referência
 > para execução manual e troubleshooting.
-
-## 🐳 Comandos de build e push
 
 ```bash
 # Build da imagem
